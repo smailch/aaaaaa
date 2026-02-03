@@ -131,7 +131,7 @@ export default function AlertsPage() {
                       <div className="flex-1">
                         <h3 className="text-lg font-bold text-foreground">{alert.title}</h3>
                         <p className="text-muted-foreground mt-1">{alert.message}</p>
-                        <p className="text-xs text-muted-foreground mt-2">{new Date(alert.date).toLocaleDateString()}</p>
+                        <p className="text-xs text-muted-foreground mt-2">{new Date(alert.date).toISOString().split("T")[0]}</p>
                       </div>
                     </div>
 
