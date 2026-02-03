@@ -111,7 +111,7 @@ export default function DocumentsPage() {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-xs text-muted-foreground">Date</span>
-                <span className="text-xs font-semibold text-foreground">{new Date(doc.date).toLocaleDateString()}</span>
+                <span className="text-xs font-semibold text-foreground">{new Date(doc.date).toISOString().split('T')[0]}</span>
               </div>
             </div>
 
@@ -169,7 +169,7 @@ export default function DocumentsPage() {
                     </span>
                   </td>
                   <td className="px-6 py-4 text-sm text-muted-foreground">{doc.size}</td>
-                  <td className="px-6 py-4 text-sm text-muted-foreground">{new Date(doc.date).toLocaleDateString()}</td>
+                  <td className="px-6 py-4 text-sm text-muted-foreground">{new Date(doc.date).toISOString().split('T')[0]}</td>
                   <td className="px-6 py-4 text-sm">
                     <div className="flex items-center gap-2">
                       <button className="p-2 hover:bg-secondary rounded-lg transition-colors text-primary">

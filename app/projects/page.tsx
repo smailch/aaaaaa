@@ -72,7 +72,7 @@ export default function ProjectsPage() {
       render: (value: string) => (
         <div className="flex items-center gap-2 text-sm">
           <Calendar size={16} className="text-primary" />
-          {new Date(value).toLocaleDateString()}
+          {new Date(value).toISOString().split('T')[0]}
         </div>
       ),
     },
@@ -82,7 +82,7 @@ export default function ProjectsPage() {
       render: (value: string) => (
         <div className="flex items-center gap-2 text-sm">
           <Calendar size={16} className="text-primary" />
-          {new Date(value).toLocaleDateString()}
+          {new Date(value).toISOString().split('T')[0]}
         </div>
       ),
     },
