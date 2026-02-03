@@ -57,13 +57,13 @@ export default function SchedulerPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'Completed':
-        return 'from-green-400 to-green-500';
+        return 'from-green-500 to-green-600 border-green-600';
       case 'In Progress':
-        return 'from-accent to-orange-500';
+        return 'from-accent to-orange-500 border-accent';
       case 'Planning':
-        return 'from-yellow-400 to-yellow-500';
+        return 'from-yellow-500 to-yellow-600 border-yellow-600';
       default:
-        return 'from-gray-400 to-gray-500';
+        return 'from-gray-500 to-gray-600 border-gray-600';
     }
   };
 
@@ -72,7 +72,7 @@ export default function SchedulerPage() {
       case 'Completed':
         return 'bg-green-100 text-green-800';
       case 'In Progress':
-        return 'bg-orange-100 text-orange-800';
+        return 'bg-accent/20 text-accent font-bold';
       case 'Planning':
         return 'bg-yellow-100 text-yellow-800';
       default:
@@ -139,14 +139,16 @@ export default function SchedulerPage() {
         {/* Time Grid Scheduler */}
         <div className="bg-card rounded-lg border-2 border-border shadow-md overflow-hidden">
           {/* Time Header */}
-          <div className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-border p-6">
-            <div className="grid grid-cols-12 gap-2">
-              <div className="col-span-2"></div>
-              {timeSlots.map(time => (
-                <div key={time} className="text-center text-sm font-bold text-foreground">
-                  {time}
-                </div>
-              ))}
+          <div className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-border p-6 sticky top-0 z-10">
+            <div className="flex items-center gap-6">
+              <div className="w-40 text-sm font-bold text-foreground">Resource</div>
+              <div className="flex-1 grid grid-cols-12 gap-3">
+                {timeSlots.map(time => (
+                  <div key={time} className="text-center text-sm font-bold text-primary">
+                    {time}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -160,72 +162,66 @@ export default function SchedulerPage() {
             ) : (
               filteredResources.map(resource => (
                 <div key={resource} className="hover:bg-primary/2 transition-colors">
-                  {/* Resource Name */}
-                  <div className="flex items-center gap-3 p-6 bg-secondary/50 border-b border-border">
-                    <div className="p-2 bg-primary/10 rounded-lg">
-                      <Hard Hat size={18} className="text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-sm font-bold text-foreground">{resource}</h3>
-                      <p className="text-xs text-muted-foreground">
-                        {scheduleData[resource]?.length || 0} job{scheduleData[resource]?.length !== 1 ? 's' : ''}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Time Slots Grid */}
-                  <div className="relative p-6 bg-background min-h-32">
-                    <div className="grid grid-cols-12 gap-2 relative">
-                      {/* Empty column for resource name */}
-                      <div className="col-span-2"></div>
-
-                      {/* Time slot columns */}
-                      {timeSlots.map(time => (
-                        <div key={time} className="col-span-1 border-r border-border/20 min-h-24"></div>
-                      ))}
+                  {/* Resource Header */}
+                  <div className="flex items-start gap-6 p-6 bg-secondary/50 border-b border-border/30">
+                    <div className="w-40 flex items-center gap-3">
+                      <div className="p-2 bg-primary/10 rounded-md">
+                        <Hard Hat size={18} className="text-primary" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-sm font-bold text-foreground">{resource}</h3>
+                        <p className="text-xs text-muted-foreground">
+                          {scheduleData[resource]?.length || 0} job{scheduleData[resource]?.length !== 1 ? 's' : ''}
+                        </p>
+                      </div>
                     </div>
 
-                    {/* Jobs Overlay */}
-                    <div className="absolute inset-0 p-6 pointer-events-none">
-                      <div className="grid grid-cols-12 gap-2">
-                        <div className="col-span-2"></div>
-                        {(scheduleData[resource] || []).map(job => {
-                          const startPercent = getTimePosition(job.startTime);
-                          const endPercent = getTimePosition(job.endTime);
-                          const width = Math.max(endPercent - startPercent, 5);
+                    {/* Time Slots Grid with Jobs */}
+                    <div className="flex-1 relative min-h-28">
+                      <div className="grid grid-cols-12 gap-3 h-full">
+                        {timeSlots.map(time => (
+                          <div key={time} className="col-span-1 border-l border-border/20 relative"></div>
+                        ))}
+                      </div>
 
-                          return (
-                            <div
-                              key={job.jobId}
-                              className="absolute pointer-events-auto"
-                              style={{
-                                left: `calc(16.67% + ${startPercent * 0.8333}%)`,
-                                width: `${width * 0.8333}%`,
-                                top: `${Math.random() * 20 + 24}px`,
-                              }}
-                            >
-                              <div className={`bg-gradient-to-r ${getStatusColor(job.status)} rounded-lg p-2 shadow-lg hover:shadow-xl transition-all border-2 border-white`}>
-                                <p className="text-xs font-bold text-white leading-tight truncate">
-                                  {job.jobName}
-                                </p>
-                                <p className="text-xs text-white/90 leading-tight truncate">
-                                  {job.taskName}
-                                </p>
-                                <div className="flex items-center gap-1 mt-1 text-xs text-white/80">
-                                  <Briefcase size={10} />
-                                  <span className="truncate text-white/80 text-xs">{job.project}</span>
-                                </div>
-                                <div className="mt-1 flex items-center justify-between">
-                                  <span className="text-xs font-semibold text-white">{job.startTime}–{job.endTime}</span>
-                                  <span className={`text-xs font-semibold px-1.5 py-0.5 rounded ${getStatusBadge(job.status)}`}>
-                                    {job.status === 'In Progress' ? 'Active' : job.status === 'Completed' ? 'Done' : 'Plan'}
-                                  </span>
-                                </div>
+                      {/* Jobs Cards */}
+                      {(scheduleData[resource] || []).map((job, index) => {
+                        const startPercent = getTimePosition(job.startTime);
+                        const endPercent = getTimePosition(job.endTime);
+                        const width = Math.max(endPercent - startPercent, 8);
+
+                        return (
+                          <div
+                            key={job.jobId}
+                            className="absolute"
+                            style={{
+                              left: `calc(160px + ${startPercent * 0.833}%)`,
+                              width: `${width * 0.833}%`,
+                              top: `${(index % 2) * 52 + 12}px`,
+                              zIndex: 5,
+                            }}
+                          >
+                            <div className={`bg-gradient-to-br ${getStatusColor(job.status)} rounded-lg p-2.5 shadow-md hover:shadow-lg transition-all border-2 text-white cursor-pointer`}>
+                              <div className="text-xs font-bold leading-tight truncate">
+                                {job.jobName}
+                              </div>
+                              <div className="text-xs text-white/95 leading-tight truncate mt-0.5">
+                                {job.taskName}
+                              </div>
+                              <div className="flex items-center gap-1 mt-1.5 text-white/90">
+                                <Briefcase size={11} className="flex-shrink-0" />
+                                <span className="text-xs truncate">{job.project}</span>
+                              </div>
+                              <div className="mt-1.5 flex items-center justify-between gap-1">
+                                <span className="text-xs font-bold">{job.startTime}–{job.endTime}</span>
+                                <span className={`text-xs font-bold px-1.5 py-0.5 rounded-full whitespace-nowrap ${getStatusBadge(job.status)}`}>
+                                  {job.status === 'In Progress' ? 'Active' : job.status === 'Completed' ? 'Done' : 'Plan'}
+                                </span>
                               </div>
                             </div>
-                          );
-                        })}
-                      </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
