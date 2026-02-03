@@ -94,66 +94,93 @@ export default function SchedulerPage() {
           icon={<Calendar className="text-primary" size={28} />}
         />
 
-        {/* Date & Filter Section with Add Job CTA */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          {/* Date & Filter Controls */}
-          <div className="lg:col-span-2 bg-card rounded-lg border-2 border-border p-6 shadow-md">
-            <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4">
-              <div className="space-y-2 flex-1">
-                <label className="text-sm font-bold text-foreground flex items-center gap-2">
-                  <Clock size={16} className="text-primary" />
-                  Selected Date
-                </label>
-                <input
-                  type="date"
-                  value={selectedDate.toISOString().split('T')[0]}
-                  onChange={(e) => setSelectedDate(new Date(e.target.value))}
-                  className="w-full px-4 py-2 border-2 border-border rounded-lg bg-background text-foreground font-medium"
-                />
-              </div>
+        {/* Date & Filter Section */}
+        <div className="bg-card rounded-lg border-2 border-border p-6 shadow-md">
+          <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4">
+            <div className="space-y-2 flex-1">
+              <label className="text-sm font-bold text-foreground flex items-center gap-2">
+                <Clock size={16} className="text-primary" />
+                Selected Date
+              </label>
+              <input
+                type="date"
+                value={selectedDate.toISOString().split('T')[0]}
+                onChange={(e) => setSelectedDate(new Date(e.target.value))}
+                className="w-full px-4 py-2 border-2 border-border rounded-lg bg-background text-foreground font-medium"
+              />
+            </div>
 
-              <div className="space-y-2 flex-1">
-                <label className="text-sm font-bold text-foreground flex items-center gap-2">
-                  <Wrench size={16} className="text-primary" />
-                  Filter by Resource
-                </label>
-                <select
-                  value={selectedResource || 'all'}
-                  onChange={(e) => setSelectedResource(e.target.value === 'all' ? null : e.target.value)}
-                  className="w-full px-4 py-2 border-2 border-border rounded-lg bg-background text-foreground font-medium"
-                >
-                  <option value="all">All Resources</option>
-                  {resources.map(r => (
-                    <option key={r} value={r}>{r}</option>
-                  ))}
-                </select>
-              </div>
+            <div className="space-y-2 flex-1">
+              <label className="text-sm font-bold text-foreground flex items-center gap-2">
+                <Wrench size={16} className="text-primary" />
+                Filter by Resource
+              </label>
+              <select
+                value={selectedResource || 'all'}
+                onChange={(e) => setSelectedResource(e.target.value === 'all' ? null : e.target.value)}
+                className="w-full px-4 py-2 border-2 border-border rounded-lg bg-background text-foreground font-medium"
+              >
+                <option value="all">All Resources</option>
+                {resources.map(r => (
+                  <option key={r} value={r}>{r}</option>
+                ))}
+              </select>
+            </div>
 
-              <div className="text-left">
-                <p className="text-sm text-muted-foreground">Scheduled</p>
-                <p className="text-2xl font-bold text-primary">
-                  {filteredResources.reduce((sum, r) => sum + (scheduleData[r]?.length || 0), 0)}
-                </p>
+            <div className="text-left">
+              <p className="text-sm text-muted-foreground">Scheduled</p>
+              <p className="text-2xl font-bold text-primary">
+                {filteredResources.reduce((sum, r) => sum + (scheduleData[r]?.length || 0), 0)}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Scheduler Layout with Sidebar */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Left Sidebar - Resource List & CTA */}
+          <div className="lg:col-span-1 space-y-4">
+            {/* Add Job CTA Button */}
+            <button className="w-full bg-gradient-to-r from-accent to-orange-500 text-white font-bold rounded-lg p-4 shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2 border-2 border-accent/80">
+              <Plus size={18} />
+              <span>Add New Job</span>
+            </button>
+
+            {/* Resources List */}
+            <div className="bg-card rounded-lg border-2 border-border p-4 shadow-md">
+              <h3 className="text-sm font-bold text-foreground mb-3 flex items-center gap-2">
+                <Hard Hat size={16} className="text-primary" />
+                Resources
+              </h3>
+              <div className="space-y-2">
+                {resources.map(resource => (
+                  <button
+                    key={resource}
+                    onClick={() => setSelectedResource(selectedResource === resource ? null : resource)}
+                    className={`w-full text-left px-3 py-2 rounded-lg transition-all text-sm font-medium ${
+                      selectedResource === resource
+                        ? 'bg-primary text-white'
+                        : 'bg-secondary/50 text-foreground hover:bg-secondary'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span>{resource}</span>
+                      <span className="text-xs px-2 py-1 bg-white/20 rounded-full">
+                        {scheduleData[resource]?.length || 0}
+                      </span>
+                    </div>
+                  </button>
+                ))}
               </div>
             </div>
           </div>
 
-          {/* Add Job CTA Button */}
-          <button className="bg-gradient-to-r from-accent to-orange-500 text-white font-bold rounded-lg p-6 shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-3 border-2 border-accent/80 h-full">
-            <Plus size={20} />
-            <span>Add New Job</span>
-          </button>
-        </div>
-
-        {/* Time Grid Scheduler */}
-        <div className="bg-card rounded-lg border-2 border-border shadow-md overflow-hidden">
           {/* Time Header */}
           <div className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-border p-6 sticky top-0 z-10">
-            <div className="flex items-center gap-6">
-              <div className="w-40 text-sm font-bold text-foreground">Resource</div>
-              <div className="flex-1 grid grid-cols-12 gap-3">
+            <div className="text-sm font-bold text-foreground">
+              <div className="grid grid-cols-12 gap-3">
                 {timeSlots.map(time => (
-                  <div key={time} className="text-center text-sm font-bold text-primary">
+                  <div key={time} className="col-span-1 text-center text-sm font-bold text-primary">
                     {time}
                   </div>
                 ))}
@@ -173,24 +200,17 @@ export default function SchedulerPage() {
                 <div key={resource} className="hover:bg-primary/2 transition-colors">
                   {/* Resource Header */}
                   <div className="flex items-start gap-6 p-6 bg-secondary/50 border-b border-border/30">
-                    <div className="w-40 flex items-center gap-3">
-                      <div className="p-2 bg-primary/10 rounded-md">
-                        <Hard Hat size={18} className="text-primary" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="text-sm font-bold text-foreground">{resource}</h3>
-                        <p className="text-xs text-muted-foreground">
-                          {scheduleData[resource]?.length || 0} job{scheduleData[resource]?.length !== 1 ? 's' : ''}
-                        </p>
-                      </div>
-                    </div>
-
                     {/* Time Slots Grid with Jobs */}
-                    <div className="flex-1 relative min-h-28">
+                    <div className="w-full relative min-h-28">
                       <div className="grid grid-cols-12 gap-3 h-full">
                         {timeSlots.map(time => (
                           <div key={time} className="col-span-1 border-l border-border/20 relative"></div>
                         ))}
+                      </div>
+
+                      {/* Resource Name Label */}
+                      <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-48 w-44 px-3 py-2 bg-secondary/80 rounded-lg border border-border text-xs font-bold text-foreground text-center">
+                        {resource}
                       </div>
 
                       {/* Jobs Cards */}
@@ -204,7 +224,7 @@ export default function SchedulerPage() {
                             key={job.jobId}
                             className="absolute"
                             style={{
-                              left: `calc(160px + ${startPercent * 0.833}%)`,
+                              left: `${startPercent * 0.833}%`,
                               width: `${width * 0.833}%`,
                               top: `${(index % 2) * 52 + 12}px`,
                               zIndex: 5,
@@ -237,6 +257,7 @@ export default function SchedulerPage() {
               ))
             )}
           </div>
+        </div>
         </div>
 
         {/* Job Details Summary */}
