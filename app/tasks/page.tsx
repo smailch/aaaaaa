@@ -1,10 +1,10 @@
 'use client';
 
+import React, { useState } from 'react';
 import MainLayout from '@/components/MainLayout';
 import PageHeader from '@/components/PageHeader';
 import { tasks, jobs } from '@/lib/mockData';
 import { Clipboard, Users, Plus, Filter, ChevronDown, CheckCircle2, Briefcase, Clock, User } from 'lucide-react';
-import { useState } from 'react';
 
 export default function TasksPage() {
   const [filter, setFilter] = useState<string>('All');
@@ -130,7 +130,7 @@ export default function TasksPage() {
                 const isExpanded = expandedTaskId === task.id;
 
                 return (
-                  <tbody key={task.id}>
+                  <React.Fragment key={task.id}>
                     <tr className="border-b border-border hover:bg-primary/5 transition-colors duration-200">
                       <td className="px-4 py-4 text-center">
                         <button
@@ -254,7 +254,7 @@ export default function TasksPage() {
                         </td>
                       </tr>
                     )}
-                  </tbody>
+                  </React.Fragment>
                 );
               })}
             </tbody>
