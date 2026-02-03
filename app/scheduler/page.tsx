@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react';
 import MainLayout from '@/components/MainLayout';
 import PageHeader from '@/components/PageHeader';
 import { tasks, jobs } from '@/lib/mockData';
-import { Calendar, Wrench, Hard Hat, Clock, Briefcase, AlertCircle, Plus } from 'lucide-react';
+import { Calendar, Wrench, HardHat, Clock, Briefcase, AlertCircle, Plus } from 'lucide-react';
 
 export default function SchedulerPage() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date(2024, 0, 22)); // Jan 22, 2024
@@ -139,7 +139,7 @@ export default function SchedulerPage() {
         {/* Main Scheduler Layout with Sidebar */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Left Sidebar - Resource List & CTA */}
-          <div className="lg:col-span-1 space-y-4">
+              <div className="lg:col-span-1 space-y-4">
             {/* Add Job CTA Button */}
             <button className="w-full bg-gradient-to-r from-accent to-orange-500 text-white font-bold rounded-lg p-4 shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2 border-2 border-accent/80">
               <Plus size={18} />
@@ -149,7 +149,7 @@ export default function SchedulerPage() {
             {/* Resources List */}
             <div className="bg-card rounded-lg border-2 border-border p-4 shadow-md">
               <h3 className="text-sm font-bold text-foreground mb-3 flex items-center gap-2">
-                <Hard Hat size={16} className="text-primary" />
+                <HardHat size={16} className="text-primary" />
                 Resources
               </h3>
               <div className="space-y-2">
