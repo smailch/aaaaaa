@@ -118,11 +118,10 @@ export default function TasksPage() {
                 <th className="w-10"></th>
                 <th className="px-6 py-4 text-left text-sm font-bold text-foreground">Task</th>
                 <th className="px-6 py-4 text-left text-sm font-bold text-foreground">Project</th>
-                <th className="px-6 py-4 text-left text-sm font-bold text-foreground">Assigned To</th>
-                <th className="px-6 py-4 text-left text-sm font-bold text-foreground">Progress</th>
-                <th className="px-6 py-4 text-left text-sm font-bold text-foreground">Status</th>
-                <th className="px-6 py-4 text-left text-sm font-bold text-foreground">Priority</th>
                 <th className="px-6 py-4 text-left text-sm font-bold text-foreground">Jobs</th>
+                <th className="px-6 py-4 text-left text-sm font-bold text-foreground">Due Date</th>
+                <th className="px-6 py-4 text-left text-sm font-bold text-foreground">Priority</th>
+                <th className="px-6 py-4 text-left text-sm font-bold text-foreground">Status</th>
               </tr>
             </thead>
             <tbody>
@@ -160,41 +159,28 @@ export default function TasksPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4">
+                        <span className="text-sm font-bold text-white bg-gradient-to-r from-accent to-orange-500 px-3 py-1.5 rounded-full inline-block shadow-md">
+                          {taskJobs.length}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
-                          <User size={14} className="text-primary flex-shrink-0" />
-                          <span className="text-foreground font-medium text-sm">{task.assignedTo}</span>
+                          <Clock size={14} className="text-primary/60 flex-shrink-0" />
+                          <span className="text-sm font-medium text-foreground">{new Date(task.dueDate).toISOString().split('T')[0]}</span>
                         </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="w-36">
-                          <div className="flex items-center justify-between mb-1.5">
-                            <span className="text-xs font-bold text-foreground">{task.progress}%</span>
-                          </div>
-                          <div className="w-full h-2.5 bg-muted rounded-full overflow-hidden border border-border/50">
-                            <div
-                              className="h-full bg-gradient-to-r from-accent to-orange-400 transition-all duration-500"
-                              style={{ width: `${task.progress}%` }}
-                            />
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={getStatusColor(task.status)}>{task.status}</span>
                       </td>
                       <td className="px-6 py-4">
                         <span className={getPriorityColor(task.priority)}>{task.priority}</span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-sm font-bold text-white bg-gradient-to-r from-accent to-orange-500 px-3 py-1.5 rounded-full inline-block shadow-md">
-                          {taskJobs.length} job{taskJobs.length !== 1 ? 's' : ''}
-                        </span>
+                        <span className={getStatusColor(task.status)}>{task.status}</span>
                       </td>
                     </tr>
 
                     {/* Expandable Jobs Section */}
                     {isExpanded && (
                       <tr className="bg-gradient-to-r from-primary/5 to-accent/5 border-b border-border">
-                        <td colSpan={8} className="px-6 py-6">
+                        <td colSpan={7} className="px-6 py-6">
                           <div className="space-y-4">
                             <div className="flex items-center gap-3 pb-4 border-b border-border">
                               <div className="p-2 bg-primary/10 rounded-lg">
