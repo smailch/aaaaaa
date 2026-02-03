@@ -3,7 +3,7 @@
 import MainLayout from '@/components/MainLayout';
 import PageHeader from '@/components/PageHeader';
 import { tasks, jobs } from '@/lib/mockData';
-import { Clipboard, Users, Plus, Filter, ChevronDown, CheckCircle2, Briefcase } from 'lucide-react';
+import { Clipboard, Users, Plus, Filter, ChevronDown, CheckCircle2, Briefcase, Clock, User } from 'lucide-react';
 import { useState } from 'react';
 
 export default function TasksPage() {
@@ -19,26 +19,26 @@ export default function TasksPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'Completed':
-        return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800';
+        return 'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800';
       case 'In Progress':
-        return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800';
+        return 'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800';
       case 'Planning':
-        return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800';
+        return 'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800';
       default:
-        return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-800';
+        return 'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800';
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'High':
-        return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800';
+        return 'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800';
       case 'Medium':
-        return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-100 text-orange-800';
+        return 'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-orange-100 text-orange-800';
       case 'Low':
-        return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800';
+        return 'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800';
       default:
-        return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-800';
+        return 'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800';
     }
   };
 
@@ -52,6 +52,19 @@ export default function TasksPage() {
         return 'bg-yellow-50 border-yellow-200';
       default:
         return 'bg-gray-50 border-gray-200';
+    }
+  };
+
+  const getJobStatusBadgeColor = (status: string) => {
+    switch (status) {
+      case 'Completed':
+        return 'bg-green-100 text-green-800';
+      case 'In Progress':
+        return 'bg-orange-100 text-orange-800';
+      case 'Planning':
+        return 'bg-yellow-100 text-yellow-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
@@ -76,16 +89,19 @@ export default function TasksPage() {
       </PageHeader>
 
       {/* Filter Buttons */}
-      <div className="flex items-center gap-2 mb-6 flex-wrap">
-        <Filter size={18} className="text-muted-foreground" />
+      <div className="flex items-center gap-3 mb-6 flex-wrap">
+        <div className="flex items-center gap-2 text-muted-foreground">
+          <Filter size={18} />
+          <span className="text-sm font-medium text-foreground">Filter by Status:</span>
+        </div>
         {statusOptions.map((status) => (
           <button
             key={status}
             onClick={() => setFilter(status)}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+            className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
               filter === status
-                ? 'bg-primary text-white shadow-sm'
-                : 'bg-secondary text-foreground hover:bg-muted'
+                ? 'bg-primary text-white shadow-md scale-105'
+                : 'bg-secondary text-foreground hover:bg-muted border border-border'
             }`}
           >
             {status}
@@ -94,19 +110,19 @@ export default function TasksPage() {
       </div>
 
       {/* Tasks Table */}
-      <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
+      <div className="bg-card rounded-lg border-2 border-border shadow-md overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-border bg-secondary">
-                <th className="w-8"></th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Task</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Project</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Assigned To</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Progress</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Status</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Priority</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Jobs</th>
+              <tr className="border-b-2 border-border bg-gradient-to-r from-primary/5 to-accent/5">
+                <th className="w-10"></th>
+                <th className="px-6 py-4 text-left text-sm font-bold text-foreground">Task</th>
+                <th className="px-6 py-4 text-left text-sm font-bold text-foreground">Project</th>
+                <th className="px-6 py-4 text-left text-sm font-bold text-foreground">Assigned To</th>
+                <th className="px-6 py-4 text-left text-sm font-bold text-foreground">Progress</th>
+                <th className="px-6 py-4 text-left text-sm font-bold text-foreground">Status</th>
+                <th className="px-6 py-4 text-left text-sm font-bold text-foreground">Priority</th>
+                <th className="px-6 py-4 text-left text-sm font-bold text-foreground">Jobs</th>
               </tr>
             </thead>
             <tbody>
@@ -116,45 +132,47 @@ export default function TasksPage() {
 
                 return (
                   <tbody key={task.id}>
-                    <tr className="border-b border-border hover:bg-secondary/30 transition-colors">
+                    <tr className="border-b border-border hover:bg-primary/5 transition-colors duration-200">
                       <td className="px-4 py-4 text-center">
                         <button
                           onClick={() => toggleTaskExpansion(task.id)}
-                          className="inline-flex items-center justify-center w-6 h-6 rounded hover:bg-primary/10 transition-colors"
+                          className="inline-flex items-center justify-center w-8 h-8 rounded-lg hover:bg-primary/15 transition-all duration-200"
                           aria-label="Expand task jobs"
                         >
                           <ChevronDown
-                            size={16}
-                            className={`text-primary transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                            size={18}
+                            className={`text-primary font-bold transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
                           />
                         </button>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <Clipboard size={18} className="text-primary flex-shrink-0" />
-                          <span className="font-semibold text-foreground">{task.title}</span>
+                          <div className="p-1.5 bg-primary/10 rounded-md">
+                            <Clipboard size={16} className="text-primary" />
+                          </div>
+                          <span className="font-semibold text-foreground text-sm">{task.title}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
-                          <Briefcase size={16} className="text-primary/60 flex-shrink-0" />
+                          <Briefcase size={14} className="text-primary/60 flex-shrink-0" />
                           <span className="text-sm font-medium text-foreground">{task.project}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
-                          <Users size={16} className="text-primary flex-shrink-0" />
+                          <User size={14} className="text-primary flex-shrink-0" />
                           <span className="text-foreground font-medium text-sm">{task.assignedTo}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="w-32">
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="text-xs font-semibold text-foreground">{task.progress}%</span>
+                        <div className="w-36">
+                          <div className="flex items-center justify-between mb-1.5">
+                            <span className="text-xs font-bold text-foreground">{task.progress}%</span>
                           </div>
-                          <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
+                          <div className="w-full h-2.5 bg-muted rounded-full overflow-hidden border border-border/50">
                             <div
-                              className="h-full bg-accent transition-all duration-300"
+                              className="h-full bg-gradient-to-r from-accent to-orange-400 transition-all duration-500"
                               style={{ width: `${task.progress}%` }}
                             />
                           </div>
@@ -167,70 +185,83 @@ export default function TasksPage() {
                         <span className={getPriorityColor(task.priority)}>{task.priority}</span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-sm font-semibold text-white bg-accent px-3 py-1 rounded-full inline-block">
-                          {task.jobCount} jobs
+                        <span className="text-sm font-bold text-white bg-gradient-to-r from-accent to-orange-500 px-3 py-1.5 rounded-full inline-block shadow-md">
+                          {taskJobs.length} job{taskJobs.length !== 1 ? 's' : ''}
                         </span>
                       </td>
                     </tr>
 
                     {/* Expandable Jobs Section */}
                     {isExpanded && (
-                      <tr className="bg-secondary/40 border-b border-border">
+                      <tr className="bg-gradient-to-r from-primary/5 to-accent/5 border-b border-border">
                         <td colSpan={8} className="px-6 py-6">
-                          <div className="max-w-4xl">
-                            <div className="flex items-center gap-2 mb-4">
-                              <Clipboard size={18} className="text-primary" />
-                              <h4 className="text-base font-semibold text-foreground">
-                                Jobs for {task.title}
-                              </h4>
-                              <span className="ml-auto text-sm text-muted-foreground">
-                                {taskJobs.length} {taskJobs.length === 1 ? 'job' : 'jobs'}
-                              </span>
+                          <div className="space-y-4">
+                            <div className="flex items-center gap-3 pb-4 border-b border-border">
+                              <div className="p-2 bg-primary/10 rounded-lg">
+                                <Clipboard size={18} className="text-primary" />
+                              </div>
+                              <div className="flex-1">
+                                <h4 className="text-base font-bold text-foreground">
+                                  Jobs for {task.title}
+                                </h4>
+                                <p className="text-xs text-muted-foreground mt-0.5">
+                                  {taskJobs.length} job{taskJobs.length !== 1 ? 's' : ''}
+                                </p>
+                              </div>
+                              <div className="flex gap-2">
+                                <span className="px-3 py-1 bg-accent/20 text-accent font-semibold text-xs rounded-full">
+                                  {taskJobs.filter(j => j.status === 'In Progress').length} Active
+                                </span>
+                                <span className="px-3 py-1 bg-green-100 text-green-800 font-semibold text-xs rounded-full">
+                                  {taskJobs.filter(j => j.status === 'Completed').length} Done
+                                </span>
+                              </div>
                             </div>
 
                             {taskJobs.length > 0 ? (
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                              <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                                 {taskJobs.map((job: any) => (
                                   <div
                                     key={job.id}
-                                    className={`flex items-start gap-3 p-4 rounded-lg border ${getJobStatusColor(job.status)}`}
+                                    className={`flex flex-col gap-3 p-4 rounded-lg border-2 transition-all hover:shadow-md ${getJobStatusColor(job.status)}`}
                                   >
-                                    <CheckCircle2
-                                      size={18}
-                                      className={`flex-shrink-0 mt-0.5 ${
-                                        job.status === 'Completed'
-                                          ? 'text-green-600'
-                                          : job.status === 'In Progress'
-                                          ? 'text-blue-600'
-                                          : 'text-yellow-600'
-                                      }`}
-                                    />
-                                    <div className="flex-1 min-w-0">
-                                      <p className="text-sm font-medium text-foreground">{job.name}</p>
-                                      <div className="flex flex-col gap-2 mt-2 text-xs text-muted-foreground">
-                                        <div className="flex items-center gap-2">
-                                          <Users size={12} className="flex-shrink-0" />
-                                          <span>{job.assignedTo}</span>
+                                    <div className="flex items-start justify-between gap-2">
+                                      <div className="flex items-start gap-3 flex-1">
+                                        <div className="mt-1">
+                                          <CheckCircle2
+                                            size={18}
+                                            className={`flex-shrink-0 ${
+                                              job.status === 'Completed'
+                                                ? 'text-green-600'
+                                                : job.status === 'In Progress'
+                                                ? 'text-accent'
+                                                : 'text-yellow-600'
+                                            }`}
+                                          />
                                         </div>
-                                        <div>
-                                          <span className={`px-2 py-0.5 rounded-full font-medium inline-block ${
-                                            job.status === 'Completed'
-                                              ? 'bg-green-100 text-green-800'
-                                              : job.status === 'In Progress'
-                                              ? 'bg-blue-100 text-blue-800'
-                                              : 'bg-yellow-100 text-yellow-800'
-                                          }`}>
-                                            {job.status}
-                                          </span>
+                                        <div className="flex-1 min-w-0">
+                                          <p className="text-sm font-semibold text-foreground leading-snug">{job.name}</p>
                                         </div>
+                                      </div>
+                                      <span className={`px-2.5 py-0.5 rounded-full font-semibold text-xs whitespace-nowrap flex-shrink-0 ${getJobStatusBadgeColor(job.status)}`}>
+                                        {job.status}
+                                      </span>
+                                    </div>
+
+                                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                                      <div className="flex items-center gap-1.5">
+                                        <User size={14} className="flex-shrink-0 text-primary/70" />
+                                        <span className="font-medium">{job.assignedTo}</span>
                                       </div>
                                     </div>
                                   </div>
                                 ))}
                               </div>
                             ) : (
-                              <div className="text-center py-6 text-muted-foreground">
-                                <p className="text-sm">No jobs assigned to this task yet</p>
+                              <div className="text-center py-8 text-muted-foreground">
+                                <Clipboard size={32} className="mx-auto mb-2 text-muted-foreground/40" />
+                                <p className="text-sm font-medium">No jobs assigned to this task yet</p>
+                                <p className="text-xs mt-1">Add jobs to track individual work items</p>
                               </div>
                             )}
                           </div>
@@ -246,7 +277,9 @@ export default function TasksPage() {
 
         {filteredTasks.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-muted-foreground text-lg">No tasks found</p>
+            <Clipboard size={40} className="mx-auto mb-3 text-muted-foreground/40" />
+            <p className="text-muted-foreground text-lg font-medium">No tasks found</p>
+            <p className="text-muted-foreground text-sm mt-1">Adjust your filters or create a new task</p>
           </div>
         )}
       </div>
