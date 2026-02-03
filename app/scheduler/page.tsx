@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react';
 import MainLayout from '@/components/MainLayout';
 import PageHeader from '@/components/PageHeader';
 import { tasks, jobs } from '@/lib/mockData';
-import { Calendar, Wrench, Hard Hat, Clock, Briefcase, AlertCircle } from 'lucide-react';
+import { Calendar, Wrench, Hard Hat, Clock, Briefcase, AlertCircle, Plus } from 'lucide-react';
 
 export default function SchedulerPage() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date(2024, 0, 22)); // Jan 22, 2024
@@ -94,46 +94,55 @@ export default function SchedulerPage() {
           icon={<Calendar className="text-primary" size={28} />}
         />
 
-        {/* Date & Filter Section */}
-        <div className="bg-card rounded-lg border-2 border-border p-6 shadow-md">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-bold text-foreground flex items-center gap-2">
-                <Clock size={16} className="text-primary" />
-                Selected Date
-              </label>
-              <input
-                type="date"
-                value={selectedDate.toISOString().split('T')[0]}
-                onChange={(e) => setSelectedDate(new Date(e.target.value))}
-                className="px-4 py-2 border-2 border-border rounded-lg bg-background text-foreground font-medium"
-              />
-            </div>
+        {/* Date & Filter Section with Add Job CTA */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          {/* Date & Filter Controls */}
+          <div className="lg:col-span-2 bg-card rounded-lg border-2 border-border p-6 shadow-md">
+            <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4">
+              <div className="space-y-2 flex-1">
+                <label className="text-sm font-bold text-foreground flex items-center gap-2">
+                  <Clock size={16} className="text-primary" />
+                  Selected Date
+                </label>
+                <input
+                  type="date"
+                  value={selectedDate.toISOString().split('T')[0]}
+                  onChange={(e) => setSelectedDate(new Date(e.target.value))}
+                  className="w-full px-4 py-2 border-2 border-border rounded-lg bg-background text-foreground font-medium"
+                />
+              </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-bold text-foreground flex items-center gap-2">
-                <Wrench size={16} className="text-primary" />
-                Filter by Resource
-              </label>
-              <select
-                value={selectedResource || 'all'}
-                onChange={(e) => setSelectedResource(e.target.value === 'all' ? null : e.target.value)}
-                className="px-4 py-2 border-2 border-border rounded-lg bg-background text-foreground font-medium"
-              >
-                <option value="all">All Resources</option>
-                {resources.map(r => (
-                  <option key={r} value={r}>{r}</option>
-                ))}
-              </select>
-            </div>
+              <div className="space-y-2 flex-1">
+                <label className="text-sm font-bold text-foreground flex items-center gap-2">
+                  <Wrench size={16} className="text-primary" />
+                  Filter by Resource
+                </label>
+                <select
+                  value={selectedResource || 'all'}
+                  onChange={(e) => setSelectedResource(e.target.value === 'all' ? null : e.target.value)}
+                  className="w-full px-4 py-2 border-2 border-border rounded-lg bg-background text-foreground font-medium"
+                >
+                  <option value="all">All Resources</option>
+                  {resources.map(r => (
+                    <option key={r} value={r}>{r}</option>
+                  ))}
+                </select>
+              </div>
 
-            <div className="text-right">
-              <p className="text-sm text-muted-foreground">Scheduled Jobs</p>
-              <p className="text-2xl font-bold text-primary">
-                {filteredResources.reduce((sum, r) => sum + (scheduleData[r]?.length || 0), 0)}
-              </p>
+              <div className="text-left">
+                <p className="text-sm text-muted-foreground">Scheduled</p>
+                <p className="text-2xl font-bold text-primary">
+                  {filteredResources.reduce((sum, r) => sum + (scheduleData[r]?.length || 0), 0)}
+                </p>
+              </div>
             </div>
           </div>
+
+          {/* Add Job CTA Button */}
+          <button className="bg-gradient-to-r from-accent to-orange-500 text-white font-bold rounded-lg p-6 shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-3 border-2 border-accent/80 h-full">
+            <Plus size={20} />
+            <span>Add New Job</span>
+          </button>
         </div>
 
         {/* Time Grid Scheduler */}
