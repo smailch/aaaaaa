@@ -23,9 +23,9 @@ export default function SchedulerPage() {
         data[assignedTo] = [];
       }
 
-      // Generate random time slots for visualization
-      const startHour = Math.floor(Math.random() * 8) + 7; // 7 AM to 3 PM
-      const duration = Math.floor(Math.random() * 4) + 2; // 2-5 hours
+      // Deterministic time slots based on job ID to avoid hydration mismatch
+      const startHour = (job.id % 8) + 7; // 7 AM to 3 PM based on job ID
+      const duration = (job.id % 4) + 2; // 2-5 hours based on job ID
 
       data[assignedTo].push({
         taskId: task.id,
